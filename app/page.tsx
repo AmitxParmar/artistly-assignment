@@ -56,18 +56,20 @@ const Index = () => {
               </span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => router.push("/artists")}
-                className="text-gray-600 hover:text-purple-600 transition-colors"
+                className="text-gray-600  hover:text-purple-600 transition-colors"
               >
                 Browse Artists
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="ghost"
                 onClick={() => router.push("/onboarding")}
                 className="text-gray-600 hover:text-purple-600 transition-colors"
               >
                 Join as Artist
-              </button>
+              </Button>
               <Button variant="outline">Sign In</Button>
               <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
                 Get Started
