@@ -7,7 +7,7 @@ export const mockArtists = [
     bio: "Professional jazz and pop vocalist with 10+ years experience",
     priceRange: "$500-1000",
     location: "New York, NY",
-    image: "https://images.unsplash.com/photo-1494790108755-2616b79b94ad?w=400",
+    image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400",
     rating: 4.9,
     completedEvents: 150,
     languages: ["English", "Spanish"],
