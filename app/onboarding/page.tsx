@@ -1,5 +1,5 @@
 "use client";
-import { memo, useState } from "react";
+import { memo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -106,6 +106,8 @@ const Onboarding = () => {
     setValue("languages", newLanguages);
   };
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -114,6 +116,13 @@ const Onboarding = () => {
         setUploadedImage(e.target?.result as string);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Only trigger if the click is directly on the container, not on the input itself
+    if (fileInputRef.current && e.target === e.currentTarget) {
+      fileInputRef.current.click();
     }
   };
 
@@ -419,19 +428,35 @@ const Onboarding = () => {
                         </button>
                       </div>
                     ) : (
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-purple-400 transition-colors">
-                        <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                        <p className="text-gray-600 mb-2">
+                      <div
+                        className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-purple-400 transition-colors relative"
+                        style={{ position: "relative" }}
+                        onClick={handleImageContainerClick}
+                        tabIndex={0}
+                        role="button"
+                        aria-label="Upload Profile Picture"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            if (fileInputRef.current)
+                              fileInputRef.current.click();
+                          }
+                        }}
+                      >
+                        <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2 pointer-events-none" />
+                        <p className="text-gray-600 mb-2 pointer-events-none">
                           Click to upload or drag and drop
                         </p>
-                        <p className="text-gray-400 text-sm">
+                        <p className="text-gray-400 text-sm pointer-events-none">
                           PNG, JPG up to 5MB
                         </p>
                         <input
+                          ref={fileInputRef}
                           type="file"
                           accept="image/*"
                           onChange={handleImageUpload}
                           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          tabIndex={-1}
                         />
                       </div>
                     )}
