@@ -40,13 +40,13 @@ const locations = [
 ];
 
 const priceRanges = [
-  { value: "all", label: "All Price Ranges" },
-  { value: "$300-800", label: "$300-800" },
-  { value: "$350-700", label: "$350-700" },
-  { value: "$400-900", label: "$400-900" },
-  { value: "$500-1000", label: "$500-1000" },
-  { value: "$800-1500", label: "$800-1500" },
-  { value: "$1000-2500", label: "$1000-2500" },
+  { slug: "all", value: "all", label: "All Price Ranges" },
+  { value: "300", slug: "300-800", label: "$300-800" },
+  { value: "350", slug: "350-700", label: "$350-700" },
+  { value: "400", slug: "400-900", label: "$400-900" },
+  { value: "500", slug: "500-1000", label: "$500-1000" },
+  { value: "800", slug: "800-1500", label: "$800-1500" },
+  { value: "1000", slug: "1000-2500", label: "$1000-2500" },
 ];
 
 function ArtistsInner() {
@@ -58,7 +58,10 @@ function ArtistsInner() {
   const searchTerm = searchParams.get("search") || "";
   const categoryFilter = searchParams.get("category") || "all";
   const locationFilter = searchParams.get("location") || "all";
-  const priceFilter = searchParams.get("priceRange") || "all";
+  const priceSlug = searchParams.get("priceRange") || "all";
+  const priceObj =
+    priceRanges.find((p) => p.slug === priceSlug) || priceRanges[0];
+  const priceFilter = priceObj.value;
 
   // Helper to update URL params
   const setParam = (key: string, value: string) => {
@@ -184,7 +187,7 @@ function ArtistsInner() {
             </Select>
 
             <Select
-              value={priceFilter}
+              value={priceSlug}
               onValueChange={(v) => setParam("priceRange", v)}
             >
               <SelectTrigger>
@@ -192,7 +195,7 @@ function ArtistsInner() {
               </SelectTrigger>
               <SelectContent>
                 {priceRanges.map((range) => (
-                  <SelectItem key={range.value} value={range.value}>
+                  <SelectItem key={range.slug} value={range.slug}>
                     {range.label}
                   </SelectItem>
                 ))}
