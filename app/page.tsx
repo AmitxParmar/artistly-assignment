@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Search, Users, Calendar, Star } from "lucide-react";
+import { ArrowRight, Search, Users, Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const Index = () => {
@@ -153,7 +153,9 @@ const Index = () => {
               <Card
                 key={index}
                 className="group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl border-0 bg-white/80 backdrop-blur-sm"
-                onClick={() => router.push("/artists")}
+                onClick={() =>
+                  router.push(`/artists?category=${category.title}`)
+                }
               >
                 <CardContent className="p-6 text-center">
                   <div className="text-4xl mb-4">{category.icon}</div>

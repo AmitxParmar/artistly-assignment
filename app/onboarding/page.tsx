@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Upload, X, CheckCircle } from "lucide-react";
 
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { toast } from "sonner";
 
 interface OnboardingFormData {
@@ -414,9 +415,11 @@ const Onboarding = () => {
                   <div className="mt-3">
                     {uploadedImage ? (
                       <div className="relative inline-block">
-                        <img
+                        <Image
                           src={uploadedImage}
                           alt="Profile preview"
+                          width={128}
+                          height={128}
                           className="w-32 h-32 object-cover rounded-lg border"
                         />
                         <button

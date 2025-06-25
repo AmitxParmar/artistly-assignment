@@ -1,5 +1,5 @@
 "use client";
-import { memo, useMemo, useState } from "react";
+import { memo, useMemo } from "react";
 import ArtistCard from "@/components/common/ArtistCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,41 +10,86 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { categories, locations, mockArtists, priceRanges } from "@/contants";
 import { ArrowLeft, Search } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import useArtists from "@/hooks/useArtists";
+
+// Static options for filters
+const categories = [
+  "all",
+  "Singer",
+  "Band",
+  "DJ",
+  "Dancer",
+  "Magician",
+  "Comedian",
+  "Painter",
+  "Other",
+];
+const locations = [
+  "all",
+  "New York",
+  "Los Angeles",
+  "Chicago",
+  "Houston",
+  "Miami",
+  "San Francisco",
+  "Seattle",
+  "Boston",
+  "Other",
+];
+const priceRanges = [
+  { value: "all", label: "All Price Ranges" },
+  { value: "budget", label: "Budget" },
+  { value: "mid", label: "Mid" },
+  { value: "premium", label: "Premium" },
+];
 
 const Artists = () => {
   const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("all");
-  const [locationFilter, setLocationFilter] = useState("all");
-  const [priceFilter, setPriceFilter] = useState("all");
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
 
-  const filteredArtists = useMemo(() => {
-    return mockArtists.filter((artist) => {
-      const matchesSearch =
-        artist.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        artist.bio.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory =
-        categoryFilter === "all" || artist.category === categoryFilter;
-      const matchesLocation =
-        locationFilter === "all" || artist.location.includes(locationFilter);
-      const matchesPrice =
-        priceFilter === "all" ||
-        (priceFilter === "budget" && artist.priceRange.includes("300")) ||
-        (priceFilter === "mid" &&
-          (artist.priceRange.includes("500") ||
-            artist.priceRange.includes("800"))) ||
-        (priceFilter === "premium" &&
-          (artist.priceRange.includes("1000") ||
-            artist.priceRange.includes("1500")));
+  // Read filters from URL params
+  const searchTerm = searchParams.get("search") || "";
+  const categoryFilter = searchParams.get("category") || "all";
+  const locationFilter = searchParams.get("location") || "all";
+  const priceFilter = searchParams.get("priceRange") || "all";
 
-      return (
-        matchesSearch && matchesCategory && matchesLocation && matchesPrice
-      );
-    });
-  }, [searchTerm, categoryFilter, locationFilter, priceFilter]);
+  // Helper to update URL params
+  const setParam = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value === "" || value === "all") {
+      params.delete(key);
+    } else {
+      params.set(key, value);
+    }
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  // Clear all filters
+  const clearFilters = () => {
+    router.replace(pathname, { scroll: false });
+  };
+
+  // Fetch artists using useArtists hook (filters except searchTerm)
+  const { filteredArtists, loading, error } = useArtists({
+    category: categoryFilter,
+    location: locationFilter,
+    priceRange: priceFilter,
+  });
+
+  // Filter by search term on client (since API doesn't support search)
+  const visibleArtists = useMemo(() => {
+    if (!searchTerm) return filteredArtists;
+    const lower = searchTerm.toLowerCase();
+    return filteredArtists.filter(
+      (artist) =>
+        artist.name.toLowerCase().includes(lower) ||
+        artist.category.toLowerCase().includes(lower) ||
+        artist.location.toLowerCase().includes(lower)
+    );
+  }, [filteredArtists, searchTerm]);
 
   return (
     <div className="min-h-screen overflow-hidden max-w-screen bg-gray-50">
@@ -97,12 +142,15 @@ const Artists = () => {
               <Input
                 placeholder="Search artists..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => setParam("search", e.target.value)}
                 className="pl-10"
               />
             </div>
 
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+            <Select
+              value={categoryFilter}
+              onValueChange={(v) => setParam("category", v)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
@@ -115,7 +163,10 @@ const Artists = () => {
               </SelectContent>
             </Select>
 
-            <Select value={locationFilter} onValueChange={setLocationFilter}>
+            <Select
+              value={locationFilter}
+              onValueChange={(v) => setParam("location", v)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Location" />
               </SelectTrigger>
@@ -128,7 +179,10 @@ const Artists = () => {
               </SelectContent>
             </Select>
 
-            <Select value={priceFilter} onValueChange={setPriceFilter}>
+            <Select
+              value={priceFilter}
+              onValueChange={(v) => setParam("priceRange", v)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Price Range" />
               </SelectTrigger>
@@ -144,18 +198,13 @@ const Artists = () => {
 
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-600">
-              {filteredArtists.length} artists found
+              {loading
+                ? "Loading artists..."
+                : error
+                ? "Error loading artists"
+                : `${visibleArtists.length} artists found`}
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setSearchTerm("");
-                setCategoryFilter("all");
-                setLocationFilter("all");
-                setPriceFilter("all");
-              }}
-            >
+            <Button variant="outline" size="sm" onClick={clearFilters}>
               Clear Filters
             </Button>
           </div>
@@ -163,12 +212,13 @@ const Artists = () => {
 
         {/* Artists Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredArtists.map((artist) => (
-            <ArtistCard artist={artist} />
+          {visibleArtists.map((artist) => (
+            <ArtistCard key={artist.id} artist={artist} />
           ))}
         </div>
 
-        {filteredArtists.length === 0 && (
+        {/* Artists Not Found */}
+        {!loading && !error && visibleArtists.length === 0 && (
           <div className="text-center py-12">
             <div className="text-gray-400 mb-4">
               <Search className="h-12 w-12 mx-auto" />
@@ -179,6 +229,11 @@ const Artists = () => {
             <p className="text-gray-600">
               Try adjusting your search criteria or filters
             </p>
+          </div>
+        )}
+        {error && (
+          <div className="text-center py-12">
+            <h3 className="text-lg font-medium text-red-600 mb-2">{error}</h3>
           </div>
         )}
       </div>
