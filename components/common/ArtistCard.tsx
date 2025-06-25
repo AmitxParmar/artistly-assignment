@@ -4,6 +4,7 @@ import { CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Star, Users } from "lucide-react";
+import Image from "next/image";
 
 type Props = {
   artist: {
@@ -29,7 +30,9 @@ const ArtistCard = ({ artist }: Props) => {
     >
       <CardContent className="p-0">
         <div className="relative">
-          <img
+          <Image
+            height={200}
+            width={200}
             src={artist.image}
             alt={artist.name}
             className="w-full h-48 object-cover rounded-t-lg"

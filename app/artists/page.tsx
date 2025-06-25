@@ -1,5 +1,5 @@
 "use client";
-import { memo, useMemo } from "react";
+import { memo, useMemo, Suspense } from "react";
 import ArtistCard from "@/components/common/ArtistCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,7 +45,7 @@ const priceRanges = [
   { value: "premium", label: "Premium" },
 ];
 
-const Artists = () => {
+function ArtistsInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -239,6 +239,16 @@ const Artists = () => {
       </div>
     </div>
   );
-};
+}
+
+const Artists = () => (
+  <Suspense
+    fallback={
+      <div className="text-center py-12 text-gray-400">Loading filters...</div>
+    }
+  >
+    <ArtistsInner />
+  </Suspense>
+);
 
 export default memo(Artists);
