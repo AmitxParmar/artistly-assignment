@@ -10,24 +10,28 @@ const Index = () => {
   const categories = [
     {
       title: "Singers",
+      category: "singer",
       description: "Professional vocalists for any event",
       icon: "🎤",
       count: "150+ Artists",
     },
     {
       title: "Dancers",
+      category: "dancer",
       description: "Contemporary, classical, and cultural dancers",
       icon: "💃",
       count: "120+ Artists",
     },
     {
       title: "Speakers",
+      category: "speaker",
       description: "Motivational and keynote speakers",
       icon: "🎯",
       count: "80+ Artists",
     },
     {
       title: "DJs",
+      category: "dj",
       description: "Professional DJs for parties and events",
       icon: "🎧",
       count: "90+ Artists",
@@ -154,7 +158,7 @@ const Index = () => {
                 key={index}
                 className="group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl border-0 bg-white/80 backdrop-blur-sm"
                 onClick={() =>
-                  router.push(`/artists?category=${category.title}`)
+                  router.push(`/artists?category=${category.category}`)
                 }
               >
                 <CardContent className="p-6 text-center">

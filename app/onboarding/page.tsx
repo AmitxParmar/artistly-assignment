@@ -20,7 +20,7 @@ import { ArrowLeft, Upload, X, CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "sonner";
-import { useAddArtist } from "@/services/artists";
+import { useAddArtist } from "@/hooks/useAddArtist";
 
 interface OnboardingFormData {
   name: string;

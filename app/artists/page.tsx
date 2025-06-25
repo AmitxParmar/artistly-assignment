@@ -38,11 +38,15 @@ const locations = [
   "Boston",
   "Other",
 ];
+
 const priceRanges = [
   { value: "all", label: "All Price Ranges" },
-  { value: "budget", label: "Budget" },
-  { value: "mid", label: "Mid" },
-  { value: "premium", label: "Premium" },
+  { value: "$300-800", label: "$300-800" },
+  { value: "$350-700", label: "$350-700" },
+  { value: "$400-900", label: "$400-900" },
+  { value: "$500-1000", label: "$500-1000" },
+  { value: "$800-1500", label: "$800-1500" },
+  { value: "$1000-2500", label: "$1000-2500" },
 ];
 
 function ArtistsInner() {
