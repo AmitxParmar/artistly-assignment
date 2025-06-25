@@ -86,8 +86,8 @@ function ArtistsInner() {
     return filteredArtists.filter(
       (artist) =>
         artist.name.toLowerCase().includes(lower) ||
-        artist.category.toLowerCase().includes(lower) ||
-        artist.location.toLowerCase().includes(lower)
+        artist?.category?.toLowerCase().includes(lower) ||
+        artist?.location?.toLowerCase().includes(lower)
     );
   }, [filteredArtists, searchTerm]);
 

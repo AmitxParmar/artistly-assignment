@@ -20,6 +20,7 @@ import { ArrowLeft, Upload, X, CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "sonner";
+import { registerArtist } from "@/services/registerArtist";
 
 interface OnboardingFormData {
   name: string;
@@ -127,18 +128,27 @@ const Onboarding = () => {
     }
   };
 
+  // submit data to the json server
   const onSubmit = async (data: OnboardingFormData) => {
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // Generate a random numeric id for the artist
+    const randomId = Math.floor(Math.random() * 1_000_000_000);
 
-    console.log("Artist Registration Data:", {
+    // Prepare artist data with random numeric id
+    const artistData = {
       ...data,
+      id: randomId,
       categories: selectedCategories,
       languages: selectedLanguages,
       profileImage: uploadedImage,
-    });
+    };
+
+    // Simulate API call
+    const artist = await registerArtist(artistData);
+    console.log(artist);
+
+    console.log("Artist Registration Data:", artistData);
 
     toast("Registration Successful! 🎉", {
       description:

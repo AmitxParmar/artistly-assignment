@@ -5,21 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Star, Users } from "lucide-react";
 import Image from "next/image";
+import { Artist } from "@/types/types";
 
 type Props = {
-  artist: {
-    id: number;
-    name: string;
-    category: string;
-    bio: string;
-    priceRange: string;
-    location: string;
-    image: string;
-    rating: number;
-    completedEvents: number;
-    languages: string[];
-    verified: boolean;
-  };
+  artist: Artist;
 };
 
 const ArtistCard = ({ artist }: Props) => {
@@ -33,7 +22,7 @@ const ArtistCard = ({ artist }: Props) => {
           <Image
             height={200}
             width={200}
-            src={artist.image}
+            src={artist?.image as string}
             alt={artist.name}
             className="w-full h-48 object-cover rounded-t-lg"
           />
@@ -89,7 +78,7 @@ const ArtistCard = ({ artist }: Props) => {
           <div className="mt-4 pt-4 border-t">
             <div className="text-xs text-gray-500 mb-2">Languages:</div>
             <div className="flex flex-wrap gap-1">
-              {artist.languages.map((lang, index) => (
+              {artist?.languages?.map((lang, index) => (
                 <Badge key={index} variant="outline" className="text-xs">
                   {lang}
                 </Badge>

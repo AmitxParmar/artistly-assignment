@@ -1,18 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-
-export interface Artist {
-  id: number;
-  name: string;
-  category: string;
-  bio: string;
-  priceRange: string;
-  location: string;
-  image: string;
-  rating: number;
-  completedEvents: number;
-  languages: string[];
-  verified: boolean;
-}
+import type { Artist } from "@/types/types";
 
 const API_URL = "http://localhost:3001"; // Ensure this matches your json-server URL
 
