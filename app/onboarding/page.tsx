@@ -20,7 +20,7 @@ import { ArrowLeft, Upload, X, CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "sonner";
-import { addArtist } from "@/services/artists";
+import { useAddArtist } from "@/services/artists";
 
 interface OnboardingFormData {
   name: string;
@@ -128,6 +128,9 @@ const Onboarding = () => {
     }
   };
 
+  // Use the useAddArtist hook
+  const addArtistMutation = useAddArtist();
+
   // submit data to the json server
   const onSubmit = async (data: OnboardingFormData) => {
     setIsSubmitting(true);
@@ -144,23 +147,32 @@ const Onboarding = () => {
       profileImage: uploadedImage,
     };
 
-    // Simulate API call
-    const artist = await addArtist(artistData);
-    console.log(artist);
+    try {
+      // Use the useAddArtist mutation
+      const artist = await addArtistMutation.mutateAsync(artistData);
+      console.log(artist);
 
-    console.log("Artist Registration Data:", artistData);
+      console.log("Artist Registration Data:", artistData);
 
-    toast("Registration Successful! 🎉", {
-      description:
-        "Welcome to Artistly! Your profile has been created and is pending approval.",
-    });
+      toast("Registration Successful! 🎉", {
+        description:
+          "Welcome to Artistly! Your profile has been created and is pending approval.",
+      });
 
-    setIsSubmitting(false);
+      setIsSubmitting(false);
 
-    // Redirect to success page or home
-    setTimeout(() => {
-      router.push("/");
-    }, 2000);
+      // Redirect to success page or home
+      setTimeout(() => {
+        router.push("/");
+      }, 2000);
+    } catch (error) {
+      setIsSubmitting(false);
+      toast("Registration Failed", {
+        description:
+          "There was an error creating your profile. Please try again.",
+      });
+      console.error("Error adding artist:", error);
+    }
   };
 
   return (

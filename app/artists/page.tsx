@@ -91,19 +91,6 @@ function ArtistsInner() {
     );
   }, [filteredArtists, searchTerm]);
 
-  // Debug output for "not found" case
-  if (!loading && !error && visibleArtists.length === 0) {
-    // eslint-disable-next-line no-console
-    console.debug("Artists Not Found Debug Info:", {
-      searchTerm,
-      categoryFilter,
-      locationFilter,
-      priceFilter,
-      filteredArtists,
-      visibleArtists,
-    });
-  }
-
   return (
     <div className="min-h-screen overflow-hidden max-w-screen bg-gray-50">
       <nav className="bg-white border-b sticky top-0 z-50">
@@ -242,22 +229,6 @@ function ArtistsInner() {
             <p className="text-gray-600">
               Try adjusting your search criteria or filters
             </p>
-            <pre className="mt-4 text-xs text-gray-400 text-left max-w-xl mx-auto overflow-x-auto bg-gray-100 rounded p-2">
-              {JSON.stringify(
-                {
-                  searchTerm,
-                  categoryFilter,
-                  locationFilter,
-                  priceFilter,
-                  filteredArtistsCount: filteredArtists.length,
-                  visibleArtistsCount: visibleArtists.length,
-                  filteredArtists: filteredArtists,
-                  visibleArtists: visibleArtists,
-                },
-                null,
-                2
-              )}
-            </pre>
           </div>
         )}
         {error && (
