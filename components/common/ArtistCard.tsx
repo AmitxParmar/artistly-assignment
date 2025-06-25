@@ -35,7 +35,7 @@ const ArtistCard = ({ artist }: Props) => {
 
         <div className="p-6">
           <div className="flex items-start justify-between mb-2">
-            <h3 className="text-lg font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">
+            <h3 className="text-lg font-semibold text-primary group-hover:text-purple-600 transition-colors">
               {artist.name}
             </h3>
             <div className="flex items-center space-x-1 text-sm text-gray-600">
@@ -43,21 +43,28 @@ const ArtistCard = ({ artist }: Props) => {
               <span>{artist.rating}</span>
             </div>
           </div>
-
           <Badge variant="secondary" className="mb-3">
-            {artist.category}
+            {artist.category
+              ? Array.isArray(artist.category)
+                ? artist.category[0]
+                : artist.category
+              : artist.categories
+              ? Array.isArray(artist.categories)
+                ? artist.categories[0]
+                : artist.categories
+              : "No category"}
           </Badge>
 
-          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+          <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
             {artist.bio}
           </p>
 
           <div className="space-y-2 mb-4">
-            <div className="flex items-center text-sm text-gray-600">
+            <div className="flex items-center text-sm text-primary">
               <MapPin className="h-4 w-4 mr-2" />
               {artist.location}
             </div>
-            <div className="flex items-center text-sm text-gray-600">
+            <div className="flex items-center text-sm text-primary">
               <Users className="h-4 w-4 mr-2" />
               {artist.completedEvents} events completed
             </div>
@@ -65,7 +72,7 @@ const ArtistCard = ({ artist }: Props) => {
 
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-lg font-semibold text-gray-900">
+              <div className="text-lg font-semibold text-muted-foreground">
                 {artist.priceRange}
               </div>
               <div className="text-sm text-gray-500">per event</div>

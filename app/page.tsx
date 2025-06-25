@@ -46,47 +46,11 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
-      {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md border-b sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">A</span>
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                Artistly
-              </span>
-            </div>
-            <div className="hidden md:flex items-center space-x-8">
-              <Button
-                variant="ghost"
-                onClick={() => router.push("/artists")}
-                className="text-gray-600  hover:text-purple-600 transition-colors"
-              >
-                Browse Artists
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={() => router.push("/onboarding")}
-                className="text-gray-600 hover:text-purple-600 transition-colors"
-              >
-                Join as Artist
-              </Button>
-              <Button variant="outline">Sign In</Button>
-              <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
-                Get Started
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+    <>
       {/* Hero Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold text-primary/40 mb-6">
             Find Perfect
             <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
               {" "}
@@ -124,15 +88,15 @@ const Index = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white/60 backdrop-blur-sm">
+      <section className="py-16 bg-secondary backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-2">
                   {stat.value}
                 </div>
-                <div className="text-gray-600">{stat.label}</div>
+                <div className="text-muted-foreground">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -143,10 +107,10 @@ const Index = () => {
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
               Browse by Category
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Discover talented artists across various categories to find the
               perfect match for your event
             </p>
@@ -156,17 +120,17 @@ const Index = () => {
             {categories.map((category, index) => (
               <Card
                 key={index}
-                className="group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl border-0 bg-white/80 backdrop-blur-sm"
+                className="group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl border-0 bg-card/80 backdrop-blur-sm"
                 onClick={() =>
                   router.push(`/artists?category=${category.category}`)
                 }
               >
                 <CardContent className="p-6 text-center">
                   <div className="text-4xl mb-4">{category.icon}</div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  <h3 className="text-xl font-semibold text-primary mb-2">
                     {category.title}
                   </h3>
-                  <p className="text-gray-600 mb-3 text-sm">
+                  <p className="text-muted-foreground mb-3 text-sm">
                     {category.description}
                   </p>
                   <div className="text-purple-600 font-medium text-sm">
@@ -229,12 +193,12 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-card">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
             Ready to Find Your Perfect Artist?
           </h2>
-          <p className="text-lg text-gray-600 mb-8">
+          <p className="text-lg text-muted-foreground mb-8">
             Join thousands of event planners who trust Artistly for their
             entertainment needs
           </p>
@@ -303,7 +267,7 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>
+    </>
   );
 };
 

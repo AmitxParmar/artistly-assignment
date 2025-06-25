@@ -10,4 +10,5 @@ export interface Artist {
   completedEvents?: number;
   languages?: string[];
   verified?: boolean;
+  categories?: string[];
 }

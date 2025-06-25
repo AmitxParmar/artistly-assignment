@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import useArtists from "@/hooks/useArtists";
 
@@ -99,42 +99,11 @@ function ArtistsInner() {
   }, [filteredArtists, searchTerm]);
 
   return (
-    <div className="min-h-screen overflow-hidden max-w-screen bg-gray-50">
-      <nav className="bg-white border-b sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <Button
-                onClick={() => router.back()}
-                variant="ghost"
-                size="sm"
-                className="flex items-center space-x-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                <span className="hidden lg:block">Back to Home</span>
-              </Button>
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">A</span>
-                </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                  Artistly
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button variant="outline">Sign In</Button>
-              <Button className="bg-gradient-to-r from-purple-600 to-blue-600">
-                Get Started
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-muted-foreground mb-2">
             Find Your Perfect Artist
           </h1>
           <p className="text-gray-600">
@@ -142,7 +111,7 @@ function ArtistsInner() {
           </p>
         </div>
         {/* Search and Filters */}
-        <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+        <div className="bg-card rounded-lg shadow-sm border p-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -244,7 +213,7 @@ function ArtistsInner() {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }
 

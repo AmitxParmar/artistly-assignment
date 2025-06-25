@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Upload, X, CheckCircle } from "lucide-react";
+import { Upload, X, CheckCircle } from "lucide-react";
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -88,12 +88,16 @@ const Onboarding = () => {
   ];
 
   const handleCategoryChange = (category: string, checked: boolean) => {
-    let newCategories;
+    let newCategories: string[];
+
     if (checked) {
-      newCategories = [...selectedCategories, category];
+      // If the user is checking a new category, set it as the only selected category
+      newCategories = [category];
     } else {
-      newCategories = selectedCategories.filter((c) => c !== category);
+      // If the user is unchecking the selected category, clear the selection
+      newCategories = [];
     }
+
     setSelectedCategories(newCategories);
     setValue("categories", newCategories);
   };
@@ -178,41 +182,14 @@ const Onboarding = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
-      {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md border-b sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.back()}
-                className="flex items-center space-x-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                <span>Back to Home</span>
-              </Button>
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">A</span>
-                </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                  Artistly
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+    <>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-secondarys mb-2">
             Join as an Artist
           </h1>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             Create your profile and start receiving booking requests
           </p>
         </div>
@@ -331,9 +308,7 @@ const Onboarding = () => {
                   Performance Categories *
                 </h3>
                 <div>
-                  <Label>
-                    Select your performance categories (at least one)
-                  </Label>
+                  <Label>Select your performance category</Label>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-3">
                     {categories.map((category) => (
                       <div
@@ -554,7 +529,7 @@ const Onboarding = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </>
   );
 };
 
