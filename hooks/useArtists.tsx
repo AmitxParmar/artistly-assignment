@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import type { Artist } from "@/types/types";
 
-const API_URL = "http://localhost:3001"; // Ensure this matches your json-server URL
+const API_URL = "https://68597bc7138a18086dfe9612.mockapi.io/api/v1"; // Ensure this matches your json-server URL
 
 interface UseArtistsFilters {
   category?: string; // e.g. "all", "Singer", etc.
@@ -23,54 +24,48 @@ function buildQueryParams(filters: UseArtistsFilters) {
   return params.toString();
 }
 
+async function fetchArtists(filters: UseArtistsFilters = {}) {
+  const query = buildQueryParams(filters);
+  const url = query ? `${API_URL}/artistss?${query}` : `${API_URL}/artistss`;
+
+  const res = await fetch(url);
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Failed to fetch artists: ${text}`);
+  }
+  // Try to parse as JSON, but handle unexpected content
+  const text = await res.text();
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (e) {
+    throw new Error(`Invalid JSON response from server: ${text}`);
+  }
+  // If the data is an object with an "artists" property, use that
+  if (data && Array.isArray(data.artists)) {
+    return data.artists as Artist[];
+  } else if (Array.isArray(data)) {
+    return data as Artist[];
+  } else {
+    return [];
+  }
+}
+
 const useArtists = (filters: UseArtistsFilters = {}) => {
-  const [artists, setArtists] = useState<Artist[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
-
-    const query = buildQueryParams(filters);
-    const url = query ? `${API_URL}/artists?${query}` : `${API_URL}/artists`;
-
-    fetch(url)
-      .then(async (res) => {
-        if (!res.ok) {
-          const text = await res.text();
-          throw new Error(`Failed to fetch artists: ${text}`);
-        }
-        // Try to parse as JSON, but handle unexpected content
-        const text = await res.text();
-        try {
-          return JSON.parse(text);
-        } catch (e) {
-          throw new Error(`Invalid JSON response from server: ${text}`);
-        }
-      })
-      .then((data) => {
-        // If the data is an object with an "artists" property, use that
-        if (data && Array.isArray(data.artists)) {
-          setArtists(data.artists);
-        } else if (Array.isArray(data)) {
-          setArtists(data);
-        } else {
-          setArtists([]);
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching artists:", err);
-        setError(err.message || "Unknown error");
-        setLoading(false);
-      });
-  }, [filters.category, filters.location, filters.priceRange]);
+  const { data, isLoading, isError, error } = useQuery<Artist[], Error>({
+    queryKey: ["artists", filters],
+    queryFn: () => fetchArtists(filters),
+  });
 
   // If the API already filters, filteredArtists is just artists
-  const filteredArtists = useMemo(() => artists, [artists]);
+  const filteredArtists = useMemo(() => data ?? [], [data]);
 
-  return { artists, filteredArtists, loading, error };
+  return {
+    artists: data ?? [],
+    filteredArtists,
+    loading: isLoading,
+    error: isError ? error?.message || "Unknown error" : null,
+  };
 };
 
 export default useArtists;

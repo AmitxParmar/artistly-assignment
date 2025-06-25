@@ -20,7 +20,7 @@ import { ArrowLeft, Upload, X, CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "sonner";
-import { registerArtist } from "@/services/registerArtist";
+import { addArtist } from "@/services/artists";
 
 interface OnboardingFormData {
   name: string;
@@ -145,7 +145,7 @@ const Onboarding = () => {
     };
 
     // Simulate API call
-    const artist = await registerArtist(artistData);
+    const artist = await addArtist(artistData);
     console.log(artist);
 
     console.log("Artist Registration Data:", artistData);

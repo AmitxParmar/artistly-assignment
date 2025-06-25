@@ -1,8 +1,10 @@
 import { Artist } from "@/types/types";
 
-export async function registerArtist(artistData: Artist) {
+const BASE_URL = "https://68597bc7138a18086dfe9612.mockapi.io/api/v1/artists";
+
+export async function addArtist(artistData: Artist) {
   try {
-    const response = await fetch("http://localhost:3001/artists", {
+    const response = await fetch(BASE_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
