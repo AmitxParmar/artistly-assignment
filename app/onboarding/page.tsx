@@ -27,9 +27,10 @@ interface OnboardingFormData {
   bio: string;
   categories: string[];
   languages: string[];
-  feeRange: string;
+  priceRange: string;
   location: string;
   profileImage?: FileList;
+  completeEvents?: number; // Added for completeEvents
 }
 
 const Onboarding = () => {
@@ -76,7 +77,7 @@ const Onboarding = () => {
     "Russian",
   ];
 
-  const feeRanges = [
+  const priceRange = [
     "$200-400",
     "$400-600",
     "$600-800",
@@ -145,6 +146,7 @@ const Onboarding = () => {
       categories: selectedCategories,
       languages: selectedLanguages,
       profileImage: uploadedImage,
+      completeEvents: data.completeEvents ?? 0, // Default to 0 if not provided
     };
 
     try {
@@ -288,6 +290,41 @@ const Onboarding = () => {
                 </div>
               </div>
 
+              {/* Complete Events */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+                  Completed Events
+                </h3>
+                <div>
+                  <Label htmlFor="completeEvents">
+                    Number of Events Completed (Optional)
+                  </Label>
+                  <Input
+                    id="completeEvents"
+                    type="number"
+                    min={0}
+                    step={1}
+                    {...register("completeEvents", {
+                      valueAsNumber: true,
+                      min: {
+                        value: 0,
+                        message: "Number of events cannot be negative",
+                      },
+                    })}
+                    className="mt-1"
+                    placeholder="e.g. 25"
+                  />
+                  {errors.completeEvents && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.completeEvents.message}
+                    </p>
+                  )}
+                  <p className="text-gray-500 text-sm mt-1">
+                    Let us know how many events you have completed so far.
+                  </p>
+                </div>
+              </div>
+
               {/* Categories */}
               <div className="space-y-6">
                 <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
@@ -402,22 +439,22 @@ const Onboarding = () => {
                   Pricing
                 </h3>
                 <div>
-                  <Label htmlFor="feeRange">Fee Range per Event *</Label>
+                  <Label htmlFor="priceRange">Fee Range per Event *</Label>
                   <Select
-                    onValueChange={(value) => setValue("feeRange", value)}
+                    onValueChange={(value) => setValue("priceRange", value)}
                   >
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select your fee range" />
                     </SelectTrigger>
                     <SelectContent>
-                      {feeRanges.map((range) => (
+                      {priceRange.map((range) => (
                         <SelectItem key={range} value={range}>
                           {range}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  {!watch("feeRange") && (
+                  {!watch("priceRange") && (
                     <p className="text-red-500 text-sm mt-1">
                       Please select a fee range
                     </p>

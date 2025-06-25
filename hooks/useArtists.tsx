@@ -7,7 +7,7 @@ const API_URL = "https://68597bc7138a18086dfe9612.mockapi.io/api/v1"; // Ensure 
 interface UseArtistsFilters {
   category?: string; // e.g. "all", "Singer", etc.
   location?: string; // e.g. "all", "New York", etc.
-  priceRange?: string; // e.g. "all", "budget", "mid", "premium"
+  priceRange?: string;
 }
 
 function buildQueryParams(filters: UseArtistsFilters) {
