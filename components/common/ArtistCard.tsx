@@ -44,15 +44,7 @@ const ArtistCard = ({ artist }: Props) => {
             </div>
           </div>
           <Badge variant="secondary" className="mb-3">
-            {artist.category
-              ? Array.isArray(artist.category)
-                ? artist.category[0]
-                : artist.category
-              : artist.categories
-              ? Array.isArray(artist.categories)
-                ? artist.categories[0]
-                : artist.categories
-              : "No category"}
+            {artist.category}
           </Badge>
 
           <p className="text-muted-foreground text-sm mb-4 line-clamp-2">

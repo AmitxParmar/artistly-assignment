@@ -147,7 +147,7 @@ const Onboarding = () => {
     const artistData = {
       ...data,
       id: randomId,
-      categories: selectedCategory,
+      category: selectedCategory,
       languages: selectedLanguages,
       profileImage: uploadedImage,
       completeEvents: data.completeEvents ?? 0, // Default to 0 if not provided
