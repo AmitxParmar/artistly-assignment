@@ -8,6 +8,7 @@ interface UseArtistsFilters {
   category?: string; // e.g. "all", "Singer", etc.
   location?: string; // e.g. "all", "New York", etc.
   priceRange?: string;
+  search?: string;
 }
 
 function buildQueryParams(filters: UseArtistsFilters) {
@@ -20,6 +21,9 @@ function buildQueryParams(filters: UseArtistsFilters) {
   }
   if (filters.priceRange && filters.priceRange !== "all") {
     params.append("priceRange", filters.priceRange);
+  }
+  if (filters.search) {
+    params.append("search", filters.search);
   }
   return params.toString();
 }
@@ -55,6 +59,7 @@ const useArtists = (filters: UseArtistsFilters = {}) => {
   const { data, isLoading, isError, error } = useQuery<Artist[], Error>({
     queryKey: ["artists", filters],
     queryFn: () => fetchArtists(filters),
+    staleTime: 10 * (60 * 1000), // 10 mins
   });
 
   // If the API already filters, filteredArtists is just artists

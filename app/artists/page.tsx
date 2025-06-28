@@ -1,5 +1,5 @@
 "use client";
-import { memo, useMemo, Suspense } from "react";
+import { memo, Suspense, useCallback } from "react";
 import ArtistCard from "@/components/common/ArtistCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import {
 import { Search } from "lucide-react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import useArtists from "@/hooks/useArtists";
+import debounce from "lodash.debounce";
 
 // Static options for filters
 const categories = [
@@ -63,15 +64,23 @@ function ArtistsInner() {
     priceRanges.find((p) => p.slug === priceSlug) || priceRanges[0];
   const priceFilter = priceObj.value;
 
+  // Debounce the search term for API calls
+  const debouncedSetParam = useCallback(
+    debounce((key, value) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (value === "" || value === "all") {
+        params.delete(key);
+      } else {
+        params.set(key, value);
+      }
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    }, 300),
+    [searchParams, pathname, router]
+  );
+
   // Helper to update URL params
   const setParam = (key: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (value === "" || value === "all") {
-      params.delete(key);
-    } else {
-      params.set(key, value);
-    }
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    debouncedSetParam(key, value);
   };
 
   // Clear all filters
@@ -79,24 +88,13 @@ function ArtistsInner() {
     router.replace(pathname, { scroll: false });
   };
 
-  // Fetch artists using useArtists hook (filters except searchTerm)
+  // Fetch artists using useArtists hook with debounced search
   const { filteredArtists, loading, error } = useArtists({
     category: categoryFilter,
     location: locationFilter,
     priceRange: priceFilter,
+    search: searchTerm,
   });
-
-  // Filter by search term on client (since API doesn't support search)
-  const visibleArtists = useMemo(() => {
-    if (!searchTerm) return filteredArtists;
-    const lower = searchTerm.toLowerCase();
-    return filteredArtists.filter(
-      (artist) =>
-        artist.name.toLowerCase().includes(lower) ||
-        artist?.category?.toLowerCase().includes(lower) ||
-        artist?.location?.toLowerCase().includes(lower)
-    );
-  }, [filteredArtists, searchTerm]);
 
   return (
     <>
@@ -117,7 +115,7 @@ function ArtistsInner() {
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
                 placeholder="Search artists..."
-                value={searchTerm}
+                defaultValue={searchTerm}
                 onChange={(e) => setParam("search", e.target.value)}
                 className="pl-10"
               />
@@ -178,7 +176,7 @@ function ArtistsInner() {
                 ? "Loading artists..."
                 : error
                 ? "Error loading artists"
-                : `${visibleArtists.length} artists found`}
+                : `${filteredArtists.length} artists found`}
             </div>
             <Button variant="outline" size="sm" onClick={clearFilters}>
               Clear Filters
@@ -188,13 +186,13 @@ function ArtistsInner() {
 
         {/* Artists Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {visibleArtists.map((artist) => (
+          {filteredArtists.map((artist) => (
             <ArtistCard key={artist.id} artist={artist} />
           ))}
         </div>
 
         {/* Artists Not Found */}
-        {!loading && !error && visibleArtists.length === 0 && (
+        {!loading && !error && filteredArtists.length === 0 && (
           <div className="text-center py-12">
             <div className="text-gray-400 mb-4">
               <Search className="h-12 w-12 mx-auto" />
