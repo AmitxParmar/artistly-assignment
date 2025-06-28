@@ -25,7 +25,7 @@ import { useAddArtist } from "@/hooks/useAddArtist";
 interface OnboardingFormData {
   name: string;
   bio: string;
-  categories: string[];
+  category: string;
   languages: string[];
   priceRange: string;
   location: string;
@@ -36,7 +36,7 @@ interface OnboardingFormData {
 const Onboarding = () => {
   const router = useRouter();
 
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -88,18 +88,18 @@ const Onboarding = () => {
   ];
 
   const handleCategoryChange = (category: string, checked: boolean) => {
-    let newCategories: string[];
+    let newCategory: string;
 
     if (checked) {
       // If the user is checking a new category, set it as the only selected category
-      newCategories = [category];
+      newCategory = category;
     } else {
       // If the user is unchecking the selected category, clear the selection
-      newCategories = [];
+      newCategory = "";
     }
 
-    setSelectedCategories(newCategories);
-    setValue("categories", newCategories);
+    setSelectedCategory(newCategory);
+    setValue("category", newCategory);
   };
 
   const handleLanguageChange = (language: string, checked: boolean) => {
@@ -147,7 +147,7 @@ const Onboarding = () => {
     const artistData = {
       ...data,
       id: randomId,
-      categories: selectedCategories,
+      categories: selectedCategory,
       languages: selectedLanguages,
       profileImage: uploadedImage,
       completeEvents: data.completeEvents ?? 0, // Default to 0 if not provided
@@ -317,7 +317,7 @@ const Onboarding = () => {
                       >
                         <Checkbox
                           id={category}
-                          checked={selectedCategories.includes(category)}
+                          checked={selectedCategory === category}
                           onCheckedChange={(checked) =>
                             handleCategoryChange(category, checked as boolean)
                           }
@@ -331,28 +331,28 @@ const Onboarding = () => {
                       </div>
                     ))}
                   </div>
-                  {selectedCategories.length === 0 && (
+                  {selectedCategory.length === 0 && (
                     <p className="text-red-500 text-sm mt-2">
                       Please select at least one category
                     </p>
                   )}
                   <div className="flex flex-wrap gap-2 mt-3">
-                    {selectedCategories.map((category) => (
-                      <Badge
-                        key={category}
-                        variant="secondary"
-                        className="bg-purple-100 text-purple-800"
+                    <Badge
+                      key={selectedCategory}
+                      variant="secondary"
+                      className="bg-purple-100 text-purple-800"
+                    >
+                      {selectedCategory}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleCategoryChange(selectedCategory, false)
+                        }
+                        className="ml-1 hover:text-red-600"
                       >
-                        {category}
-                        <button
-                          type="button"
-                          onClick={() => handleCategoryChange(category, false)}
-                          className="ml-1 hover:text-red-600"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </Badge>
-                    ))}
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
                   </div>
                 </div>
               </div>
@@ -507,7 +507,7 @@ const Onboarding = () => {
                   type="submit"
                   disabled={
                     isSubmitting ||
-                    selectedCategories.length === 0 ||
+                    selectedCategory.length === 0 ||
                     selectedLanguages.length === 0
                   }
                   className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg py-3"
